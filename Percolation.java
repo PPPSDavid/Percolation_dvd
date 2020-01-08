@@ -26,13 +26,13 @@ public class Percolation {
             states.union(0, i);
             states.union(n * n + 1, (n * n + 1 - i));
         }
-        for (int i = 1; i <= n * n; i++) {
+        for (int i = 0; i < n * n; i++) {
             grid[i] = 0;
         }
     }
 
     private boolean is_valid_coor(int row, int col) {
-        return (row > 0 && row <= n && col > 0 && col <= n);
+        return (row > 0 && row <= size && col > 0 && col <= size);
     }
 
     private int to_index(int r, int c) {
@@ -48,7 +48,7 @@ public class Percolation {
     }
 
     private boolean is_open(int index) {
-        return grid[index] == 1;
+        return grid[index - 1] == 1;
     }
 
     public void open(int row, int col) {
@@ -57,14 +57,14 @@ public class Percolation {
         }
         int ind = to_index(row, col);
         if (!is_open(ind)) {
-            grid[ind] = 1;
+            grid[ind - 1] = 1;
             for (int i = 0; i < 4; i++) {
                 int neighbor_x = get_neighbors_x(row, i);
                 int neighbor_y = get_neighbors_y(col, i);
                 if (is_valid_coor(neighbor_x, neighbor_y)) {
                     int neighbor_ind = to_index(neighbor_x, neighbor_y);
                     if (is_open(neighbor_ind)) {
-                        states.union(neighbor_ind + 1, ind + 1);
+                        states.union(neighbor_ind, ind);
                     }
 
                 }
@@ -98,4 +98,36 @@ public class Percolation {
         }
     }
 
+    public int numberOfOpenSite() {
+        int size_ind = size * size;
+        int count = 0;
+        for (int i = 1; i <= size_ind; i++) {
+            if (is_open(i)) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    public boolean percolates() {
+        if (size == 1) {
+            return is_open(0);
+        }
+        else {
+            return states.connected(0, size * size + 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        Percolation a = new Percolation(2);
+        System.out.println(a.size);
+        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.percolates());
+        a.open(1, 2);
+        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.percolates());
+        a.open(2, 2);
+        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.percolates());
+    }
 }

@@ -119,14 +119,17 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation a = new Percolation(2);
+        Percolation a = new Percolation(3);
         System.out.println(a.size);
         System.out.println(a.numberOfOpenSite());
         System.out.println(a.percolates());
-        a.open(1, 2);
+        a.open(1, 1);
         System.out.println(a.numberOfOpenSite());
         System.out.println(a.percolates());
-        a.open(2, 2);
+        a.open(2, 1);
+        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.percolates());
+        a.open(3, 1);
         System.out.println(a.numberOfOpenSite());
         System.out.println(a.percolates());
     }

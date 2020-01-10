@@ -123,7 +123,10 @@ public class Percolation {
 
     public boolean percolates() {
         if (size == 1) {
-            return is_open(0);
+            return is_open(1);
+        }
+        else if (size == 0) {
+            return false;
         }
         else {
             return states.connected(0, size * size + 1);

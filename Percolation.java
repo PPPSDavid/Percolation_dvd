@@ -8,10 +8,11 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 
 public class Percolation {
-    public int size;
-    public WeightedQuickUnionUF states;
-    public int[] grid;
-    public int[][] neighbors = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+    private int size;
+    private WeightedQuickUnionUF states;
+    private WeightedQuickUnionUF states_without_bottom;
+    private int[] grid;
+    private int[][] neighbors = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
 
     public Percolation(int n) {
 
@@ -21,9 +22,11 @@ public class Percolation {
 
         size = n;
         states = new WeightedQuickUnionUF(n * n + 2);
+        states_without_bottom = new WeightedQuickUnionUF(n * n + 1);
         grid = new int[n * n];
         for (int i = 1; i <= n; i++) {
             states.union(0, i);
+            states_without_bottom.union(0, i);
             states.union(n * n + 1, (n * n + 1 - i));
         }
         for (int i = 0; i < n * n; i++) {
@@ -37,6 +40,14 @@ public class Percolation {
 
     private int to_index(int r, int c) {
         return (r - 1) * size + c;
+    }
+
+    private int to_row(int index) {
+        return (index / size);
+    }
+
+    private int to_col(int index) {
+        return (index % size);
     }
 
     private int get_neighbors_x(int row, int count) {
@@ -65,6 +76,7 @@ public class Percolation {
                     int neighbor_ind = to_index(neighbor_x, neighbor_y);
                     if (is_open(neighbor_ind)) {
                         states.union(neighbor_ind, ind);
+                        states_without_bottom.union(neighbor_ind, ind);
                     }
 
                 }
@@ -90,7 +102,7 @@ public class Percolation {
                 return true;
             }
             else {
-                return states.connected(0, to_index(row, col));
+                return (states_without_bottom.connected(0, to_index(row, col)));
             }
         }
         else {
@@ -98,7 +110,7 @@ public class Percolation {
         }
     }
 
-    public int numberOfOpenSite() {
+    public int numberOfOpenSites() {
         int size_ind = size * size;
         int count = 0;
         for (int i = 1; i <= size_ind; i++) {
@@ -121,16 +133,16 @@ public class Percolation {
     public static void main(String[] args) {
         Percolation a = new Percolation(3);
         System.out.println(a.size);
-        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.numberOfOpenSites());
         System.out.println(a.percolates());
         a.open(1, 1);
-        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.numberOfOpenSites());
         System.out.println(a.percolates());
         a.open(2, 1);
-        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.numberOfOpenSites());
         System.out.println(a.percolates());
         a.open(3, 1);
-        System.out.println(a.numberOfOpenSite());
+        System.out.println(a.numberOfOpenSites());
         System.out.println(a.percolates());
     }
 }
